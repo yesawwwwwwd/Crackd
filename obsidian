@@ -1,0 +1,28 @@
+PATCHED = setmetatable({}, {__mode = "v"})
+
+task.spawn(function()
+    while task.wait(1) do
+        for _, v in getgc(true) do
+            if typeof(v) == "table" and rawget(v, "ExpectedKey") and rawget(v, "Callback") then
+                KEY = tostring(v)
+                if not PATCHED[KEY] then
+                    PATCHED[KEY] = true
+                    OLD_CALLBACK = rawget(v, "Callback")
+                    
+                    if typeof(OLD_CALLBACK) == "function" then
+                        rawset(v, "Callback", function(success, key)
+                            return OLD_CALLBACK(true, rawget(v, "ExpectedKey") or key)
+                        end)
+                    end
+                end
+            end
+        end
+        
+        BTN = gethui():WaitForChild("Obsidian", 1) and gethui().Obsidian:WaitForChild("Main", 1) and gethui().Obsidian.Main:WaitForChild("Container", 1) and gethui().Obsidian.Main.Container:WaitForChild("ScrollingFrame", 1) and gethui().Obsidian.Main.Container.ScrollingFrame:WaitForChild("Frame", 1) and gethui().Obsidian.Main.Container.ScrollingFrame.Frame:WaitForChild("TextButton", 1)
+        if BTN then
+            for _, conn in getconnections(BTN.MouseButton1Click) do
+                conn:Fire()
+            end
+        end
+    end
+end)
