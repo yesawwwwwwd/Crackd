@@ -1,0 +1,19 @@
+OLD = hookmetamethod(game, "__index", newcclosure(function(s, k)
+    if not checkcaller() and k == "KeySystem" then
+        return false
+    end
+    return OLD(s, k)
+end))
+
+while task.wait(0.05) do
+    for _, t in getgc(true) do
+        if typeof(t) == "table" then
+            pcall(function()
+                if rawget(t, "KeySystem") ~= nil then
+                    rawset(t, "KeySystem", false)
+                end
+            end)
+        end
+    end
+end
+
