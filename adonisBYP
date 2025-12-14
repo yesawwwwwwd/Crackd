@@ -1,0 +1,38 @@
+repeat task.wait() until game:IsLoaded()
+
+setfpscap(999)
+
+for _,v in getgc() do
+    if type(v) == "function" and islclosure(v) then
+        cs = debug.getconstants(v)
+        for _,c in cs do
+            if type(c) == "string" and (c:match("0x%x+") or c == "Tamper Protection" or c == "TableCheck") then
+                hookfunction(v, function() end)
+                break
+            end
+        end
+    end
+end
+
+for _,o in getgc(true) do
+    if type(o) == "table" then
+        dt = rawget(o, "Detected")
+        if dt and type(dt) == "function" then
+            hookfunction(dt, function() return true end)
+        end
+        kf = rawget(o, "Kill")
+        if kf and type(kf) == "function" then
+            hookfunction(kf, function() end)
+        end
+        dc = rawget(o, "Disconnect")
+        if dc and type(dc) == "function" then
+            hookfunction(dc, function() end)
+        end
+    end
+end
+
+game:GetService("StarterGui"):SetCore("SendNotification", {
+    Title = "bypassed",
+    Text = "adonis disabled",
+    Duration = 3
+})
