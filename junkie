@@ -1,0 +1,23 @@
+while task.wait(.2) do
+    REQ_FUNC = request or http_request or (http and http.request) or (syn and syn.request) or (fluxus and fluxus.request)
+    
+    if REQ_FUNC then
+        OLD_REQ = hookfunction(REQ_FUNC, newcclosure(function(OPTS)
+            if OPTS.Url:find("verifyKey") or OPTS.Url:find("junkie") then
+                return {
+                    Success = true,
+                    StatusCode = 200,
+                    Body = game:GetService("HttpService"):JSONEncode({
+                        success = true,
+                        valid = true,
+                        keyless_mode = true,
+                        is_banned = false
+                    })
+                }
+            end
+            return OLD_REQ(OPTS)
+        end))
+    end
+end
+
+
